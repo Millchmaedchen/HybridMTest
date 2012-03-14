@@ -1,0 +1,4 @@
+export(
+"hybrid.test","row.oneway.anova","row.kruskal.wallis","row.kgrp.shapiro", "row.kgrp.shapiro",
+"row.pearson","row.spearman", "row.slr.shapiro")
+importFrom(stats,sd)
