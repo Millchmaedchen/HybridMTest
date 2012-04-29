@@ -15,7 +15,7 @@ Description: Performs hybrid multiple testing that incorporates method selection
  both types of EBPs through EBPs from Shapiro Wilk test of normality.
  This methodology uses then the law of total EBPs.
 License: GPL Version 2 or later
-biocviews: GeneExpression, Genetics, Bioinformatics, Microarray
+biocViews: GeneExpression, Genetics, Bioinformatics, Microarray
 Imports: stats
 LazyLoad: yes
 Packaged: 2012-03-08 16:57:04 UTC; dking
