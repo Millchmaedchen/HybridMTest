@@ -1,7 +1,7 @@
 Package: HybridMTest
 Type: Package
 Title: Hybrid Multiple Testing
-Version: 1.4.0
+Version: 1.5.0
 Date: 2011-06-14
 Author: Stan Pounds <stanley.pounds@stjude.org>, Demba Fofana <demba.fofana@stjude.org>
 Maintainer: Demba Fofana <demba.fofana@stjude.org>
