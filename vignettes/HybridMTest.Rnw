@@ -1,0 +1,132 @@
+%\VignetteIndexEntry{Hybrid Multiple Testing}
+%\VignetteDepends{Biobase}
+%\VignetteKeywords{Microarray Association Pattern}
+%\VignettePackage{HybridMTest}
+\documentclass[]{article}
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage{enumerate}
+
+
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\title{An Introduction to \Rpackage{Hybrid Testing}}
+\author{Stan Pounds, Demba Fofana}
+\date{October 25, 2011}
+
+\begin{document}
+
+\maketitle
+
+<<options,echo=FALSE>>=
+options(width=60)
+@ 
+
+\section{Introduction}
+One of the most challenging matters in multiple testing is to consider assumptions in testing procedures.
+People dealing with multiple testing scenario are in general overwhelmed by the size of the data, 
+and then turn a blind eye on the assymptions. Turning a blind eye on assumptions can result on biased
+results or inaccuracy. The problem of multiple testing always occurs in gene expression data analysis. 
+To solve the problem of multiple testing we have developed a method of testing that takes assumptions 
+into considerations.
+So, for example when dealing with k-group comparison when the data are normally distributed our procedure
+gives high weight to ANOVA test and when the data are not normally distributed the procedure gives higher
+weigth to Kruskal Wallis test than to F-test.
+When dealing with regression analysis our procedure uses Pearson test if the data are normally distributed 
+and Spearman test when the data are not normally distributed. For two-group comparison a t-test is used when 
+the data are normally distributed and ranksum test is used when the data are not normally distributed. 
+In two-group comparison the equality of variances is taken into consideration. 
+Our methodology is applied to microarray data analysis for three-group comparison and Regression analysis.
+
+
+\section{Data Requirements}
+For regression analysis our procedure deals with complete data; preprocessing the data is then needed when 
+there are missing data.
+When analysing data in k-group comparison the analyst need to specify clearly the different groups to compare. 
+We have given some examples that will help understand how to procede. Suppose we have expression data and
+phenotype data; we need then to combine these data sets into an expression set, we call it express.set. 
+The expression data are in file correlation.data and the phenotype data are also in  correlation.data. 
+Here is how to procede in order to conduct a regression study.
+
+<<LoadCorrelationData>>=
+library(HybridMTest) 
+data(correlation.data)
+Y<-exprs(correlation.data)
+x<-pData(correlation.data)
+
+test.specs<-cbind.data.frame(label=c("pearson","spearman","shapiro"),
+                             func.name=c("row.pearson","row.spearman","row.slr.shapiro"),
+                             x=rep("x",3),
+                             opts=rep("",3))
+
+ebp.def<-cbind.data.frame(wght=c("shapiro.ebp","(1-shapiro.ebp)"),
+                          mthd=c("pearson.ebp","spearman.ebp"))
+corr.res<-hybrid.test(correlation.data,test.specs,ebp.def)
+head(corr.res)
+@
+
+
+\section{Microarray Data Analysis}
+
+Since multiple testing is widely used in microarray gene expression data, we are using microarray 
+data analysis to illustrate our procedures.
+ However our procedure can be used for other types of data analysis for multiple testing. 
+The prerequisite is that the user needs to understand empirical Bayes probabilities, False Discovery Rate(FDR).
+Empirical Bayes probabilities are known also by local FDR; genes which empirical Bayes probabilities are
+less than a given cut off point are said to be expressed. As mentioned in 
+Efron et al., empirical Bayes probabilities take multiple testing into consideration. 
+ 
+
+
+Let's give another example for k-group comparison scenario.
+
+<<LoadComparisonData>>=
+library(HybridMTest) 
+data(GroupComp.data)
+brain.express.set <- exprs(GroupComp.data)
+brain.pheno.data  <- pData(GroupComp.data)
+ brain.express.set[1:5, 1:8]
+  head(brain.pheno.data) 
+
+test.specs<-cbind.data.frame(label=c("anova","kw","shapiro"),
+                             func.name=c("row.oneway.anova","row.kruskal.wallis","row.kgrp.shapiro"),
+                             x=rep("grp",3),
+                             opts=rep("",3))
+
+ebp.def<-cbind.data.frame(wght=c("shapiro.ebp","(1-shapiro.ebp)"),
+                          mthd=c("anova.ebp","kw.ebp"))
+
+Kgrp.res<-hybrid.test(GroupComp.data,test.specs,ebp.def)
+
+head(Kgrp.res)
+
+@
+
+
+
+\section{Reference}
+
+1. Benjamini, Y., Hochberg, Y., 1995. Controlling the False Discovery Rate: a pPractical and Powerful Approach to Multiple Testing. 
+J.R. Statist. Soc. B, 57, 289-300.
+
+2. Efron, B. (2004) Large-Scale Simultaneous Hypothesis Testing: the choice of a null hypothesis. JASA
+
+3. Efron B., Tibshirani R., Story J.D and Tusher V. Empiricaal Bayes Analysis of a Microarray Experiment.2001, vol. 96, 1151-1160
+
+4. Efron, B.,Tibhirani, R., 2002. Empirical Bayes Methods and False Discovery Rates for Microarrays. Wiley-Liss, Inc. 23,70-86
+
+5. Pounds, S.,Rai, S., 2009. Assumption adequacy averaging as a concept for developing more robust methods for differential 
+gene expression analysis. Elsevier 53, 1604-1612.  
+
+6. Pounds, S., Cheng, C., 2004. Improving false discovery rate estimation. Bioinformatics 20, 1737-1745.
+
+7. Strimmer, K., 2008. Fdrtool: a versatile R package for estimating local and tail area-based false discovery rates. Bioinformatics
+ 24, 1461-1462.
+
+\end{document}
+
+
+
+
+
+
+
